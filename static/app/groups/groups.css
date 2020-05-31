@@ -1,0 +1,52 @@
+h3 {
+    margin: 0;
+    padding: 15px;
+}
+.groups-board {
+    display: flex;
+}
+.groups-board > .card {
+    margin: 20px;
+}
+.group-list {
+
+}
+.group-list button {
+    width: 100%;
+    margin-top:20px
+}
+.group-list > div {
+    padding: 10px;
+}
+
+.group-details {
+    flex-grow: 1;
+}
+.group-details > h5 {
+    padding:15px;
+}
+.single-list-view {
+    display: flex;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 10px;
+}
+.single-list-view > h5 {
+    flex-grow: 1;
+    padding: 10px;
+}
+.single-list-view > i {
+    padding-top: 10px;
+    font-size: 3em;
+}
+
+.icon-desc {
+    display: flex;
+}
+.icon-desc > i {
+    width: auto;
+    padding-top: 0px;
+}
+.icon-desc > p {
+    flex-grow: 1;
+}

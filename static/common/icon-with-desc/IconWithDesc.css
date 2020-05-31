@@ -1,0 +1,15 @@
+.icon-desc {
+    cursor: pointer;
+}
+.icon-desc > i {
+    font-size: 45px;
+    padding-top: 0.5em;
+    width: 100%;
+    text-align: center;
+}
+.icon-desc > p {
+    text-align: center;
+}
+.icon-desc > .material-icons:hover {
+    color:#757575;
+}

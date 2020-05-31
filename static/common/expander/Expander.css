@@ -1,0 +1,7 @@
+.hidden {
+    height: 0px !important;
+    opacity: 0;
+}
+.expander > .bottom{
+    height: 100px;
+}

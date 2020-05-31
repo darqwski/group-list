@@ -1,0 +1,15 @@
+.landing-page {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 100px;
+}
+.landing-page > .card {
+    margin: 10px;
+    padding: 15px;
+}
+.landing-page > .left-card {
+    flex-grow: 1;
+}
+.landing-page > .right-card {
+    min-width: 25%;
+}

@@ -1,0 +1,16 @@
+.labeled-input {
+    display: flex;
+    flex-direction: column-reverse;
+}
+.error > label {
+    color: red;
+    border-bottom-color: red;
+}
+.error > input {
+    border-bottom-color: red;
+}
+.error-message {
+    font-weight: 700;
+    color: red;
+    font-size: 10px;
+}

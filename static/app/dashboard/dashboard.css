@@ -1,0 +1,106 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+.groups-card {
+    min-width: 300px;
+}
+div > h3{
+    margin: 0;
+    padding: 15px;
+}
+.items {
+    flex-grow: 1;
+    padding: 15px;
+}
+.groups-card h5 {
+    cursor: pointer;
+    padding: 15px;
+}
+.groups-card h5:hover {
+    background: #DDDDDD;
+}
+
+.table-card {
+    flex-grow: 1;
+    margin-left: 20px;
+}
+.table-card > h5 {
+    padding: 15px;
+    padding-left: 20px;
+}
+.list-car {
+    min-width: 300px;
+}
+.single-list {
+    padding:20px;
+    cursor: pointer;
+}
+.single-list:hover {
+    background: #DDDDDD;
+}
+.single-item {
+    height: 50px;
+    padding-left: 10px;
+}
+.single-item > label > span {
+    color: #333;
+    font-size: 2em !important;
+    padding-left: 50px !important;
+    padding-top: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+[type="checkbox"] + span:not(.lever):before {
+    width: 40px;
+    height: 40px;
+}
+[type="checkbox"]:checked + span:not(.lever):before {
+     width: 24px;
+     height: 44px
+}
+
+.labeled-input {
+    padding:5px;
+    flex-grow: 1;
+}
+form {
+    display: flex;
+    padding-left: 10px;
+}
+form i {
+    cursor: pointer;
+    font-size: 5em !important;
+    color:#666666;
+}
+form i:hover {
+    color:#999999;
+}
+.icon-desc {
+    display: flex;
+}
+.icon-desc:hover {
+    background: #DDDDDD;
+    transition: 0.3s;
+}
+.icon-desc > i {
+    width: auto;
+}
+.icon-desc > p {
+    padding-top: 18px;
+}
+.invitation {
+    padding: 10px;
+}
+.invitation > div {
+    margin-top: 10px;
+    padding: 10px;
+    display: flex;
+}
+.invitation > div > button {
+    flex-grow: 1;
+    margin-left: 10px;
+    margin-right: 10px;
+}
