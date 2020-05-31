@@ -2,6 +2,9 @@ h3 {
     margin: 0;
     padding: 15px;
 }
+i:hover {
+    color: #666666;
+}
 .groups-board {
     display: flex;
 }
@@ -35,9 +38,11 @@ h3 {
     flex-grow: 1;
     padding: 10px;
 }
+
 .single-list-view > i {
     padding-top: 10px;
     font-size: 3em;
+    cursor: pointer;
 }
 
 .icon-desc {
@@ -49,4 +54,20 @@ h3 {
 }
 .icon-desc > p {
     flex-grow: 1;
+}
+.group-title {
+    display: flex;
+}
+.group-title > h3 {
+    flex-grow: 1;
+}
+.group-title > i {
+    display: flex;
+    padding-top: 10px;
+    font-size: 3em;
+    cursor: pointer;
+}
+
+.group-title > i:hover {
+    color: #DDDDDD;
 }

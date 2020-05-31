@@ -2,7 +2,7 @@
 include_once ("_PHP/Modules/PageGenerator.php");
 include_once ("_PHP/Modules/PDOController.php");
 session_start();
-echo $_SERVER['REQUEST_METHOD'];
+
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     if(isset($_POST['login']) && isset($_POST['password'])){
         $login = $_POST['login'];

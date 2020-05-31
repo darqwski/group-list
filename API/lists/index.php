@@ -30,8 +30,37 @@ function addNewList(){
     }
     print_r($result);
 }
+
+function editList(){
+    $userId = $_SESSION['userId'];
+    //TODO sprawdzanie czy użytkownik może edytować listę
+
+    $data = RequestAPI::getBody();
+    $result = putCommand("UPDATE `lists` SET `listName` = :listName WHERE `lists`.`listId` = :listId;", $data);
+    if(!is_array($result)){
+        return message('Listę zmieniono pomyślnie');
+    }
+    print_r($result);
+
+}
+function deleteList(){
+    $userId = $_SESSION['userId'];
+    //TODO sprawdzanie czy użytkownik może usunąć listę
+
+    $data = RequestAPI::getBody();
+    $result = putCommand("UPDATE `lists` SET `groupId` = -1 WHERE `lists`.`listId` = :listId;", $data);
+    if(!is_array($result)){
+        return message('Listę zmieniono pomyślnie');
+    }
+    print_r($result);
+
+}
 if(RequestAPI::getMethod() == "GET"){
     echo getUserLists();
 } else if(RequestAPI::getMethod() == "POST"){
     echo addNewList();
+} else if(RequestAPI::getMethod() == "PUT"){
+    echo editList();
+} else if(RequestAPI::getMethod() == "DELETE"){
+    echo deleteList();
 }

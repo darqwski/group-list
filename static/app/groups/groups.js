@@ -3,6 +3,31 @@ const State = {
     currentGroup: 0
 }
 
+const editGroup = ({groupId, groupName}) => () => {
+    customModal({
+        title:'Edytowanie nazwy grupy',
+        content: () => {
+            return $('<div>')
+                .append(LabeledInput({name:'group-groupName',label:"Zmień nazwę listy", value: groupName}))
+        },
+        action: ()=> {
+            const { groupName } = gatherGroup('group')
+            Request
+                .put('/API/groups/',{data: {groupName, groupId}})
+                .then(refreshApp)
+        }
+    })
+}
+const deleteGroup = ({groupId, groupName}) => () => {
+    showToastWithAction({
+        title:'Usuwanie grupy',
+        message: `Czy na pewno chcesz tą  grupę ${groupName}?`,
+        action: () => Request
+            .delete('/API/groups/',{data: {groupId}})
+            .then(refreshApp)
+    })
+}
+
 const addNewGroup = () => {
     customModal({
         title:'Dodawania nowej grupy',
@@ -17,64 +42,6 @@ const addNewGroup = () => {
     })
 }
 
-const inviteUser = () => {
-    const {groupName, groupId} = State.groups[State.currentGroup]
-
-    customModal({
-        title:'Zapraszanie użytkownika',
-        content: () => {
-            return $('<div>')
-                .append($('<p>').text('Użytkownik zostanie dołączona do grupy ' + groupName))
-                .append(LabeledInput({name:'invite-email',label:"Podaj email użytkownika którego chcesz dodać"}))
-        },
-        action: ()=> {
-            const { email } = gatherGroup('invite')
-            Request.post('/API/invitations/',{data: {email, groupId}})
-               // .then(window.location.href+='../groups')
-        }
-    })
-}
-
-const createList = () => {
-    const {groupName, groupId} = State.groups[State.currentGroup]
-    console.log(State.groups[State.currentGroup])
-    customModal({
-        title:'Dodawania nowej listy',
-        content: () => {
-            return $('<div>')
-                .append($('<p>').text('Lista zostanie dołączona do grupy ' + groupName))
-                .append(LabeledInput({name:'list-listName',label:"Podaj nazwę nowej list"}))
-        },
-        action: ()=> {
-            const { listName } = gatherGroup('list')
-            Request
-                .post('/API/lists/',{data: {listName, groupId}})
-                .then(refreshApp)
-        }
-    })
-}
-const SingleListView = ({listName},index) => {
-    const container = $('<div>',{class:'card single-list-view clickable'})
-    container
-        .append($('<i>',{class:'material-icons'}).text('receipt').click(()=>{}))
-        .append($('<h5>').text(listName))
-        .append($('<i>',{class:'material-icons'}).text('edit').click(()=>{}))
-    return container;
-}
-const SingleUserView = ({login},index) => {
-    const container = $('<div>',{class:'card single-list-view'})
-    container
-        .append($('<i>',{class:'material-icons'}).text('person').click(()=>{}))
-        .append($('<h5>').text(login))
-        .append(IconWithDesc('delete','Usuń z grupy', ()=>{}))
-    return container;
-}
-
-const NoListsView = () => {
-    const container = $('<div>').append("Na razie nie ma żadnej listy w tej grupie")
-
-    return container;
-}
 const render = () => {
     const { groups, currentGroup: currentGroupIndex } = State;
     const currentGroup = groups[currentGroupIndex]
@@ -96,7 +63,12 @@ const render = () => {
         .append(IconWithDesc('add','Dodaj nową grupę',addNewGroup))
 
     const groupDetails = $('<div>',{class: 'card group-details purple lighten-4'})
-        .append($('<h3>', {class: 'purple darken-3 white-text'}).text(currentGroup.groupName))
+        .append(
+            $('<div>',{class:'group-title purple darken-3 white-text'})
+                .append($('<h3>').text(currentGroup.groupName))
+                .append($('<i>',{class:'material-icons'}).text('edit').click(editGroup(currentGroup)))
+                .append($('<i>',{class:'material-icons'}).text('delete').click(deleteGroup(currentGroup)))
+        )
         .append($('<h5>',{ class: 'purple darken-2 white-text'}).text(`Listy w grupie`))
         .append(
             $('<div>')

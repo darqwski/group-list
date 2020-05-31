@@ -2,68 +2,6 @@ const State = {
     currentList: 0
 }
 
-const SingleGroup = (users,index) => {
-    const { groupName } = users[0];
-    const title = $('<h5>').text(`${index+1}.${groupName} (${users.length})`)
-    const usersContainer = $('<ul>').append(users.map(({login})=>$('<li>').text(login)))
-    return Expander({
-        top: () => title,
-        bottom: () => usersContainer,
-    });
-}
-const addNewGroup = () => {
-    customModal({
-        title:'Dodawania nowej grupy',
-        content: () => {
-            return $('<div>').append(LabeledInput({name:'group-groupName',label:"Podaj nazwę nowej grupy"}))
-        },
-        action: ()=> {
-            const { groupName } = gatherGroup('group')
-            Request.post('/API/groups/',{data: {groupName}})
-                .then(window.location.href+='../groups')
-        }
-    })
-}
-const addNewList = () => {
-
-}
-const confirmInvitation = ({invitationId}) => {
-    Request.put('/API/invitations',{data: {invitationId}})
-        .then(refreshApp)
-
-}
-const rejectInvitation = ({invitationId}) => {
-    Request.delete('/API/invitations',{data: {invitationId}})
-        .then(refreshApp)
-}
-
-const SingleInvitation = ({login, groupName, datetime, invitationId}, index) => {
-    const container = $('<div>',{class:'card invitation'})
-
-    container
-        .append($('<h6>').text(`Otrzymano zaproszenie do grupy ${groupName}`))
-        .append($('<h7>').text(`${login} ${datetime}`))
-        .append(
-            $('<div>')
-                .append($('<button>',{ class: 'btn green'}).text('Przyjmij').click(()=>confirmInvitation({ invitationId})))
-                .append($('<button>',{ class: 'btn red'}).text('Odrzuć').click(()=>rejectInvitation({ invitationId})))
-        )
-
-    return container
-}
-const CurrentGroups = ({ groups }) => {
-    const container = $('<div>',{class:'card groups-card'})
-    container.append($('<h3>', {class: 'purple darken-3 white-text'}).text('Twoje grupy'))
-    container.append(groups.map(SingleGroup))
-//    container.append(IconWithDesc('add','Dodaj nową grupę',addNewGroup))
-    return container;
-}
-const CurrentInvitations = ({ invitations }) => {
-    const container = $('<div>',{class:'card groups-card'})
-    container.append($('<h3>', {class: 'purple darken-3 white-text'}).text('Twoje zaproszenia'))
-    container.append(invitations.map(SingleInvitation))
-    return container;
-}
 const CurrentLists = ({ lists }) => {
     const container = $('<div>',{class:'card list-card'})
     container.append($('<h3>', {class: 'purple darken-3 white-text'}).text('Twoje listy'))
@@ -73,7 +11,6 @@ const CurrentLists = ({ lists }) => {
                     .text(`${index+1}.${list[0].listName} (${list.length})`)
                     .click(()=>{State.currentList = index;render();})
         )))
-  //  container.append(IconWithDesc('add','Dodaj nową listę',addNewList))
     return container;
 }
 
