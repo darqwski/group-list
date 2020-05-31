@@ -23,10 +23,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         echo "Brak loginu lub hasła";
     }
 }
-if(isset($_GET['logout'])){
-    session_destroy();
-    header('Location: /');
-}
+
 generatePage([
     'root'=>''
 ]);

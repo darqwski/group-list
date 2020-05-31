@@ -12,7 +12,11 @@ const SingleGroup = (users,index) => {
 const CurrentGroups = ({ groups }) => {
     const container = $('<div>',{class:'card groups-card'})
     container.append($('<h3>', {class: 'purple darken-3 white-text'}).text('Twoje grupy'))
-    container.append(groups.map(SingleGroup))
+    container.append(groups.length ===0 ? noGroupsView() :groups.map(SingleGroup))
 
     return container;
 }
+const noGroupsView = () => $('<div>',{class:'card'})
+    .append($('<h5>').text('Nie posiadasz żadnej grupy'))
+    .append($('<a>',{href:'../groups/',class:'btn blue darken-4'}).text('Załóż własną'))
+

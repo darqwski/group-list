@@ -104,3 +104,7 @@ form i:hover {
     margin-left: 10px;
     margin-right: 10px;
 }
+.empty-card {
+    padding:20px;
+    height: 400px;
+}

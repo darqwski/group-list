@@ -5,7 +5,8 @@ const State = {
 const CurrentLists = ({ lists }) => {
     const container = $('<div>',{class:'card list-card'})
     container.append($('<h3>', {class: 'purple darken-3 white-text'}).text('Twoje listy'))
-    container.append(
+    container.append(lists.length === 0 ?
+        noListsView() :
         lists.map((list, index) => (
                 !!list.length && $('<h5>',{class:'single-list'})
                     .text(`${index+1}.${list[0].listName} (${list.length})`)
@@ -13,6 +14,8 @@ const CurrentLists = ({ lists }) => {
         )))
     return container;
 }
+
+const noListsView = () => $('<h5>').text("Aktualnie nie posiadasz żadnej listy")
 
 const SingleItemView = ({itemName, status, itemId}, index) => {
     const container = $('<div>',{ class: 'single-item'}).append(
@@ -38,7 +41,26 @@ const toggleItem= itemId => {
        .then(refreshApp)
 }
 
-const Table = ({ items, list }) => {
+const emptyView = () => {
+    const container = $('<div>',{class:'card table-card'})
+    container.append($('<h3>', {class: 'purple darken-3 white-text'}).text("Tutaj będzie twoja lista zadań"))
+    container.append(
+        $('<div>',{class:'empty-card'})
+            .append($('<p>')
+                .append(`Aplikacja służy do notatek grupowych, więc aby z niej korzystać `)
+                .append($('<a>',{href:'../groups/'}).text('Stwórz Własną!')))
+            .append($('<p>').append('Dalej należy utworzyć listę a potem można korzystać z aplikacji'))
+    )
+
+    return container
+}
+
+const Table = ({ lists, currentList }) => {
+    if(lists.length === 0) {
+        return emptyView();
+    }
+    const items = lists[currentList];
+    const list = lists[currentList][0]
     const container = $('<div>',{class:'card table-card'})
     const { listName } = list;
     container.append($('<h3>', {class: 'purple darken-3 white-text'}).text(listName))
@@ -53,7 +75,6 @@ const Table = ({ items, list }) => {
     container.append($('<h5>').text(`Do zrobienia ${done.length}`))
     container.append($('<div>').append(done.map(SingleItemView)))
     return container
-
 }
 const render = () => {
     const container = $('<div>',{class:'container'})
@@ -64,16 +85,14 @@ const render = () => {
         .append(CurrentLists({lists}))
         .append(CurrentGroups({groups}))
     )
-    container.append(Table({items: lists[currentList], list: lists[currentList][0]}))
+    container.append(Table({lists, currentList}))
     container.append()
 
 
     $('#app').empty().append(container)
 }
 const refreshApp = () => Request.get('/API/groups/')
-    .then(groups=>{
-        State.groups = groups
-    })
+    .then(groups=>{State.groups = groups})
     .then(() => Request.get('/API/lists/'))
     .then(lists=>State.lists = lists.reduce((memo,item)=>([...memo, ...item]),[]))
     .then(() => Request.get('/API/invitations/?type=receiver'))

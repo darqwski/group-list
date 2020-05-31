@@ -1,5 +1,4 @@
-
-const BaseRequest = (address, props) =>  fetch(address,{
+const BaseRequest = (address, props) =>  fetch(serverUrl+address,{
         ...props,
         body: props.data ? JSON.stringify(props.data): undefined,
 }).then(response=>response.json())

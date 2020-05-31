@@ -1,1 +1,5 @@
 /_PHP/Modules/PDOController.php
+/_PHP/Modules/DB_PASS.php
+/_PHP/Modules/DEPLOY_PASS.php
+/deploy.sh
+/static/common/request/_request.js

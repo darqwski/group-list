@@ -4,7 +4,6 @@ function importModule($link){
     $components = [];
     $components['css'] = [];
     $components['js'] = [];
-
     foreach (glob("$link") as $dirName) {
         foreach (glob("$dirName/*.css") as $fileName){
             array_push($components['css'], "<link rel='stylesheet' href='$fileName'/>" );
@@ -37,7 +36,9 @@ function generatePage($data = []){
 
     $template = str_replace('$scripts',implode("", array_merge($components['js'],$modules['js'])),$template);
     $template = str_replace('$styles',implode("",array_merge($components['css'],$modules['css'])),$template);
+    $template = str_replace('$serverData',"
+    <script>const serverUrl = '".($_SERVER['SERVER_ADDR'] == '127.0.0.1' ? '' : '/grouplist')."';</script>
+",$template);
 
     echo $template;
-
 }

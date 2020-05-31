@@ -10,7 +10,7 @@ const Navbar = () => {
                     $('<ul>', {class:'right hide-on-med-and-down'})
                         .append($('<li>').append($('<a>',{href:'../dashboard'}).text('Strona główna')))
                         .append($('<li>').append($('<a>',{href:'../groups'}).text('Grupy i listy')))
-                        .append($('<li>').append($('<a>',{href:'../?logout'}).text('Wyloguj')))
+                        .append($('<li>').append($('<a>',{href:'../logout'}).text('Wyloguj')))
                 )
         )
 
