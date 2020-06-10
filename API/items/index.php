@@ -24,9 +24,20 @@ function toggleItem(){
     }
     return print_r($result);
 }
+function deleteItem(){
+    $data = RequestAPI::getBody();
+
+    $result = putCommand("DELETE FROM `item` WHERE `item`.`itemId` = $data[itemId];");
+    if(!is_array($result)){
+        return message('Usunięto pomyślnie');
+    }
+    return print_r($result);
+}
 
 if(RequestAPI::getMethod() == "POST"){
     echo addNewItem();
 } else if(RequestAPI::getMethod() == "PUT") {
     echo toggleItem();
+}else if(RequestAPI::getMethod() == "DELETE") {
+    echo deleteItem();
 }

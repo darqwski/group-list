@@ -18,14 +18,14 @@ const CurrentLists = ({ lists }) => {
 const noListsView = () => $('<h5>').text("Aktualnie nie posiadasz żadnej listy")
 
 const SingleItemView = ({itemName, status, itemId}, index) => {
-    const container = $('<div>',{ class: 'single-item'}).append(
-        $('<label>')
+    const container = $('<div>',{ class: 'single-item'})
+        .append($('<label>')
             .append(
-                $('<input>',{type:'checkbox', checked: +status ? 'checked' : undefined})
-                    .click(()=>toggleItem(itemId))
+                $('<input>',{type:'checkbox', checked: +status ? 'checked' : undefined}).click(()=>toggleItem(itemId))
             )
             .append($('<span>').text(`${index+1}. ${itemName}`))
-    )
+        )
+        .append($('<i>',{class:'material-icons'}).text('delete').click(()=>deleteItem(itemId)))
 
     return container
 }
@@ -39,6 +39,14 @@ const addNewItem = () => {
 const toggleItem= itemId => {
    Request.put('/API/items/',{data: { itemId}})
        .then(refreshApp)
+}
+const deleteItem= itemId => {
+   Request.delete('/API/items/',{data: { itemId}})
+       .then(({message})=>{
+            showSnackbar(message)
+       })
+       .then(refreshApp)
+
 }
 
 const emptyView = () => {

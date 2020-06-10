@@ -4,6 +4,9 @@
      * Function bassicly for getting data from database
      * For :	SELECT FROM
      */
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
 include_once "DB_PASS.php";
 
     function getCommand($command, $params = []){
@@ -20,7 +23,7 @@ include_once "DB_PASS.php";
      * Function bassicly for insert command which return only number of new,change records
      * For : INSERT INTO, UPDATE, DELETE FROM and TABLE modulators
      */
-    function putCommand($command, $params){
+    function putCommand($command, $params = []){
         try {$db = new PDO(TEXT, LOGIN,PASSWORD);}
         catch (PDOException $e) {return "Failed to connect database!: " . $e->getMessage() . "<br/>";}
         $sth = $db->prepare($command);
@@ -37,7 +40,7 @@ include_once "DB_PASS.php";
         }
     }
 
-    function insertCommand($command,$params){
+    function insertCommand($command,$params = []){
         try {$db = new PDO(TEXT, LOGIN,PASSWORD);}
         catch (PDOException $e) {return "Failed to connect database!: " . $e->getMessage() . "<br/>";}
         $sth = $db->prepare($command);
@@ -57,7 +60,7 @@ include_once "DB_PASS.php";
 
         return $return[0]['LAST_INSERT_ID()'];
     }
-    function deleteCommand($command){
+    function deleteCommand($command, $params = []){
         try {$db = new PDO(TEXT, LOGIN,PASSWORD);}
         catch (PDOException $e) {return "Failed to connect database!: " . $e->getMessage() . "<br/>";}
         $return = $db->exec($command);

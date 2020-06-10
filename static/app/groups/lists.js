@@ -12,6 +12,7 @@ const createList = () => {
             const { listName } = gatherGroup('list')
             Request
                 .post('/API/lists/',{data: {listName, groupId}})
+                .then(({message})=>showSnackbar(message))
                 .then(refreshApp)
         }
     })

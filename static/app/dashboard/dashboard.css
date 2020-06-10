@@ -43,6 +43,15 @@ div > h3{
 .single-item {
     height: 50px;
     padding-left: 10px;
+    display: flex;
+}
+.single-item > label {
+    flex-grow: 1;
+}
+.single-item > i {
+    font-size: 3em;
+    margin-right: 10px;
+    cursor: pointer;
 }
 .single-item > label > span {
     color: #333;

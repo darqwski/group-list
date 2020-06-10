@@ -14,7 +14,12 @@ function getUserLists(){
                 ->getFromQuery("
 SELECT itemId, lists.listName, lists.listId, lists.groupId, itemName, status 
 FROM `lists` 
-LEFT JOIN item ON item.listId = lists.listId WHERE lists.groupId = $groupId[groupId]")->groupBy('listId')->toArray()->get();
+LEFT JOIN item ON item.listId = lists.listId 
+WHERE 
+    lists.groupId = $groupId[groupId]
+    AND 
+    (status = 0 OR status = 1)
+")->groupBy('listId')->toArray()->get();
            return $groupData;
         })
        ->toJson();
@@ -24,6 +29,10 @@ function addNewList(){
     $userId = $_SESSION['userId'];
     $data = RequestAPI::getBody();
     //TODO sprawdzanie czy użytkownik może dodać do grupy listę, czy list jest mniej niż 3 oraz czy w grupie jest mniej niż 5 list
+    $groups = getCommand("SELECT * FROM lists WHERE `groupId` = :groupId",['groupId'=>$data['groupId']]);
+    if(count($groups)>=5){
+        return message('Posiadasz już 5 list w tej grupie, aby dodać wiecęj zakup premium');
+    }
     $result = insertCommand("INSERT INTO `lists` (`listId`, `groupId`, `listName`) VALUES (NULL, :groupId, :listName);", $data);
     if(!is_array($result)){
         return message('Listę utworzono pomyślnie');

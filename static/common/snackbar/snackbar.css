@@ -1,0 +1,18 @@
+.snackbar{
+    position:fixed;
+    bottom:1em;
+    height:6em;
+    background-color: #222222;
+    opacity: 1;
+    transition: 2s;
+    z-index: 10;
+    width: 80%;
+    margin-left: 10%;
+}
+.snackbar-text{
+    color:white;
+    font-size: 1.3em;
+    height: 100%;
+    padding-top: 1em;
+    text-align: center;
+}
