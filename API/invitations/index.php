@@ -3,6 +3,7 @@ include_once "../../_PHP/Modules/RequestAPI.php";
 include_once "../../_PHP/Modules/PDOController.php";
 include_once "../../_PHP/Modules/Utils.php";
 include_once "../../_PHP/Modules/Stream.php";
+include_once "../../_PHP/Modules/Privileges.php";
 session_start();
 
 function getInvitations(){
@@ -34,7 +35,19 @@ function invitePerson(){
         return message('Brak osoby w bazie');
     }
     $inviteReceiver = $matchingPerson[0]['userId'];
-//    // TODO sprawdź czy już zaproszony, sprawdź czy może nie przekroczył limitu członków
+
+    $alreadyInvited = getCommand("
+SELECT inviteReceiver FROM invitations WHERE inviteReceiver=:userId AND groupId=:groupId
+",['userId'=>$inviteReceiver,'groupId'=>$group]);
+    if(count($alreadyInvited)>0){
+        return message('Użytkownik otrzymał już zaproszenie wcześniej');
+    }
+
+    $usersInGroup = getCommand("SELECT * FROM invitations WHERE groupId = :groupId",["groupId"=>$group]);
+    if(count($usersInGroup)> MAX_USERS_PER_GROUP){
+        return message("Przekroczono liczbę członków na grupę (max ".MAX_USERS_PER_GROUP."), aby zaprosić więcej osób usuń istniejące zaproszenia, lub zakup konto premium");
+    }
+
     insertCommand("
 INSERT INTO `invitations` (`invitationId`, `inviteSender`, `inviteReceiver`, `datetime`,`groupId`, `status`)
 VALUES (NULL, '$userId', '$inviteReceiver', NOW(), :group, '0');", ['group'=>$group]);
@@ -47,6 +60,9 @@ function acceptInvitation(){
     $invitation = getCommand("SELECT * FROM invitations WHERE invitationId = :invitationId", $data)[0];
     if($invitation['inviteReceiver'] != $_SESSION['userId']){
         return;
+    }
+    if(count((new Privileges($_SESSION['userId']))->getConnectedGroups())>=MAX_GROUPS_PER_USER){
+        return message("Nie możesz dołączyć do grupy ponieważ maksymalna ilość dołączonych grup to ".MAX_GROUPS_PER_USER);
     }
     insertCommand("INSERT INTO `user_group` (`userGroupId`, `userId`, `groupId`) VALUES (NULL, '$invitation[inviteReceiver]', '$invitation[groupId]');");
     putCommand("UPDATE `invitations` SET `status` = '1' WHERE `invitations`.`invitationId` = :invitationId;", $data);

@@ -14,6 +14,7 @@ const editGroup = ({groupId, groupName}) => () => {
             const { groupName } = gatherGroup('group')
             Request
                 .put('/API/groups/',{data: {groupName, groupId}})
+                .then(({message})=>showSnackbar(message))
                 .then(refreshApp)
         }
     })
@@ -24,6 +25,7 @@ const deleteGroup = ({groupId, groupName}) => () => {
         message: `Czy na pewno chcesz tą  grupę ${groupName}?`,
         action: () => Request
             .delete('/API/groups/',{data: {groupId}})
+            .then(({message})=>showSnackbar(message))
             .then(refreshApp)
     })
 }

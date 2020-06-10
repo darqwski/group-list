@@ -3,6 +3,7 @@ include_once "../../../_PHP/Modules/RequestAPI.php";
 include_once "../../../_PHP/Modules/PDOController.php";
 include_once "../../../_PHP/Modules/Utils.php";
 include_once "../../../_PHP/Modules/Stream.php";
+include_once "../../../_PHP/Modules/Privileges.php";
 session_start();
 function getGroupsDetails(){
     $userId = $_SESSION['userId'];
@@ -43,14 +44,17 @@ GROUP BY lists.listId
 
 function removeFromGroup(){
     $userId = $_SESSION['userId'];
-    //TODO check if user is Admin of this group
     $data = RequestAPI::getBody();
-    $result = putCommand("DELETE FROM user_group WHERE groupId = :groupId AND userId = :userId", $data);
-    if(!is_array($result)){
-        return message("Użytkownik usunięty pomyślnie");
+    if((new Privileges($userId))->canManageGroup($data['groupId'])){
+        $result = putCommand("DELETE FROM user_group WHERE groupId = :groupId AND userId = :userId", $data);
+        if(!is_array($result)){
+            return message("Użytkownik usunięty pomyślnie");
+        }
+        print_r($result);
+    } else {
+        http_response_code(403);
+        return message('Brak uprawnień');
     }
-
-    print_r($result);
 }
 
 if(RequestAPI::getMethod() == "GET"){

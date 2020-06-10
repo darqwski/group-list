@@ -3,6 +3,7 @@ include_once "../../_PHP/Modules/RequestAPI.php";
 include_once "../../_PHP/Modules/PDOController.php";
 include_once "../../_PHP/Modules/Utils.php";
 include_once "../../_PHP/Modules/Stream.php";
+include_once "../../_PHP/Modules/Privileges.php";
 session_start();
 function getUserGroups(){
     $userId = $_SESSION['userId'];
@@ -26,9 +27,16 @@ WHERE groups.groupId = $groupId[groupId]
        ->toJson();
 }
 function addGroup(){
+    if(!isset($_SESSION['userId']))return;
     $userId = $_SESSION['userId'];
     $data = RequestAPI::getBody();
-
+    if(count((new Privileges($_SESSION['userId']))->getConnectedGroups())>=MAX_GROUPS_PER_USER){
+        return message(
+            "Nie możesz utworzyćgrupy ponieważ maksymalna ilośćgrup to "
+            .MAX_GROUPS_PER_USER
+            .", aby posiadać więcej grup, kup konto premium"
+        );
+    }
     $result = insertCommand("INSERT INTO `groups` 
 (`groupId`, `groupName`, `adminId`, `creationDate`) VALUES (NULL, :groupName, '$userId', NOW());", $data);
     if(!is_array($result)){
@@ -40,27 +48,34 @@ function addGroup(){
 
 function editGroup(){
     $userId = $_SESSION['userId'];
-    //TODO sprawdzanie czy użytkownik może edytować grupe
-
     $data = RequestAPI::getBody();
-    $result = putCommand("UPDATE `groups` SET `groupName` = :groupName WHERE `groups`.`groupId` = :groupId;", $data);
-    if(!is_array($result)){
-        return message('Grupę zmieniono pomyślnie');
+    if((new Privileges($userId))->canManageGroup($data['groupId'])){
+        $result = putCommand("UPDATE `groups` SET `groupName` = :groupName WHERE `groups`.`groupId` = :groupId;", $data);
+        if(!is_array($result)){
+            return message('Grupę zmieniono pomyślnie');
+        }
+        print_r($result);
+    } else {
+        http_response_code(403);
+        return message('Brak uprawnień');
     }
-    print_r($result);
+
+
 
 }
 function deleteGroup(){
     $userId = $_SESSION['userId'];
-    //TODO sprawdzanie czy użytkownik może usunąć grupe
-
     $data = RequestAPI::getBody();
-    $result = putCommand("UPDATE `groups` SET `isActive` = 0 WHERE `groups`.`groupId` = :groupId;", $data);
-    if(!is_array($result)){
-        return message('Grupę usunięto pomyślnie');
+    if((new Privileges($userId))->canManageGroup($data['groupId'])) {
+        $result = putCommand("UPDATE `groups` SET `isActive` = 0 WHERE `groups`.`groupId` = :groupId;", $data);
+        if(!is_array($result)){
+            return message('Grupę usunięto pomyślnie');
+        }
+        print_r($result);
+    } else {
+        http_response_code(403);
+        return message('Brak uprawnień');
     }
-    print_r($result);
-
 }
 
 if(RequestAPI::getMethod() == "GET"){

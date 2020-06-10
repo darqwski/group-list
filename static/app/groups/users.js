@@ -11,7 +11,7 @@ const inviteUser = () => {
         action: ()=> {
             const { email } = gatherGroup('invite')
             Request.post('/API/invitations/',{data: {email, groupId}})
-            // .then(window.location.href+='../groups')
+                .then(({message})=>showSnackbar(message))
         }
     })
 }

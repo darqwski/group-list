@@ -3,6 +3,7 @@ include_once "../../_PHP/Modules/RequestAPI.php";
 include_once "../../_PHP/Modules/PDOController.php";
 include_once "../../_PHP/Modules/Utils.php";
 include_once "../../_PHP/Modules/Stream.php";
+include_once "../../_PHP/Modules/Privileges.php";
 session_start();
 function getUserLists(){
     $userId = $_SESSION['userId'];
@@ -28,41 +29,51 @@ WHERE
 function addNewList(){
     $userId = $_SESSION['userId'];
     $data = RequestAPI::getBody();
-    //TODO sprawdzanie czy użytkownik może dodać do grupy listę, czy list jest mniej niż 3 oraz czy w grupie jest mniej niż 5 list
-    $groups = getCommand("SELECT * FROM lists WHERE `groupId` = :groupId",['groupId'=>$data['groupId']]);
-    if(count($groups)>=5){
-        return message('Posiadasz już 5 list w tej grupie, aby dodać wiecęj zakup premium');
+    $privilegeCheck = new Privileges($userId);
+    if($privilegeCheck->isInGroup($data['groupId'])){
+        $groups = getCommand("SELECT * FROM lists WHERE `groupId` = :groupId",['groupId'=>$data['groupId']]);
+        if(count($groups)>=5){
+            return message('Posiadasz już 5 list w tej grupie, aby dodać wiecęj zakup premium');
+        }
+        $result = insertCommand("INSERT INTO `lists` (`listId`, `groupId`, `listName`) VALUES (NULL, :groupId, :listName);", $data);
+        if(!is_array($result)){
+            return message('Listę utworzono pomyślnie');
+        }
+        print_r($result);
+    } else {
+        http_response_code(403);
+        return message('Nie masz uprawnień');
     }
-    $result = insertCommand("INSERT INTO `lists` (`listId`, `groupId`, `listName`) VALUES (NULL, :groupId, :listName);", $data);
-    if(!is_array($result)){
-        return message('Listę utworzono pomyślnie');
-    }
-    print_r($result);
 }
 
 function editList(){
     $userId = $_SESSION['userId'];
-    //TODO sprawdzanie czy użytkownik może edytować listę
-
     $data = RequestAPI::getBody();
-    $result = putCommand("UPDATE `lists` SET `listName` = :listName WHERE `lists`.`listId` = :listId;", $data);
-    if(!is_array($result)){
-        return message('Listę zmieniono pomyślnie');
+    if((new Privileges($userId))->canManageList($data['listId'])) {
+        $result = putCommand("UPDATE `lists` SET `listName` = :listName WHERE `lists`.`listId` = :listId;", $data);
+        if(!is_array($result)){
+            return message('Listę zmieniono pomyślnie');
+        }
+        print_r($result);
+    } else {
+        http_response_code(403);
+        return message('Nie masz uprawnień');
     }
-    print_r($result);
 
 }
 function deleteList(){
     $userId = $_SESSION['userId'];
-    //TODO sprawdzanie czy użytkownik może usunąć listę
-
     $data = RequestAPI::getBody();
-    $result = putCommand("UPDATE `lists` SET `groupId` = -1 WHERE `lists`.`listId` = :listId;", $data);
-    if(!is_array($result)){
-        return message('Listę zmieniono pomyślnie');
+    if((new Privileges($userId))->canManageList($data['listId'])) {
+        $result = putCommand("UPDATE `lists` SET `groupId` = -1 WHERE `lists`.`listId` = :listId;", $data);
+        if (!is_array($result)) {
+            return message('Listę zmieniono pomyślnie');
+        }
+        print_r($result);
+    } else {
+        http_response_code(403);
+        return message('Nie masz uprawnień');
     }
-    print_r($result);
-
 }
 if(RequestAPI::getMethod() == "GET"){
     echo getUserLists();
