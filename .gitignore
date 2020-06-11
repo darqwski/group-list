@@ -4,3 +4,4 @@
 /deploy.sh
 /static/common/request/_request.js
 /_PHP/Emails/EMAIL_PASS.php
+_PHP/Emails/confimAccount.php

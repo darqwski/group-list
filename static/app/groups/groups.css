@@ -1,33 +1,53 @@
-h3 {
-    margin: 0;
-    padding: 15px;
-}
-i:hover {
-    color: #666666;
-}
-.groups-board {
+.groups-container {
     display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    height: 100%;
+    padding-top: 100px;
 }
-.groups-board > .card {
-    margin: 20px;
-}
-.group-list {
-
-}
-.group-list button {
-    width: 100%;
-    margin-top:20px
-}
-.group-list > div {
+.group {
+    margin: 10px;
     padding: 10px;
-}
-
-.group-details {
     flex-grow: 1;
 }
-.group-details > h5 {
-    padding:15px;
+.group > div {
+    display: flex;
 }
+.group > div > div {
+    padding-left:15px;
+}
+.group-title {
+    display: flex;
+}
+.group-title > div {
+    margin-left: 10px;
+    flex-grow: 1;
+}
+.group-title > i {
+    font-size: 64px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.edit-container {
+    display: flex;
+}
+.edit-container > div {
+    flex-grow: 1;
+    margin: 10px;
+}
+.group-edit {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    flex-grow: 1;
+    height: 100%;
+}
+.lists-card > h5{
+    margin-top:0px;
+    padding: 15px;
+}
+
 .single-list-view {
     display: flex;
     padding-left: 10px;
@@ -38,13 +58,13 @@ i:hover {
     flex-grow: 1;
     padding: 10px;
 }
-
 .single-list-view > i {
     padding-top: 10px;
     font-size: 3em;
-    cursor: pointer;
 }
-
+.single-list-view > img {
+    max-height: 48px;
+}
 .icon-desc {
     display: flex;
 }
@@ -55,19 +75,34 @@ i:hover {
 .icon-desc > p {
     flex-grow: 1;
 }
-.group-title {
+.group-options {
     display: flex;
+    margin:10px;
 }
-.group-title > h3 {
+.group-options > div {
+    margin-left: 10px;
+}
+.add-group {
+    min-width: 80%;
     flex-grow: 1;
 }
-.group-title > i {
-    display: flex;
-    padding-top: 10px;
-    font-size: 3em;
+.circle-color {
+    border-radius: 24px;
+    height: 48px;
+    width: 48px;
+    margin: 10px;
     cursor: pointer;
 }
-
-.group-title > i:hover {
-    color: #DDDDDD;
+.color-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+.icon-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+.icon-container img {
+    max-height: 32px;
+    cursor: pointer;
+    margin:5px;
 }

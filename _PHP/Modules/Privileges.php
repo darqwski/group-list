@@ -20,7 +20,7 @@ WHERE user_group.userId = :userId
         return getCommand("
 SELECT * FROM user_group 
 INNER JOIN groups ON user_group.groupId = groups.groupId
-WHERE user_group.userId = :userId
+WHERE user_group.userId = :userId AND isActive = 1
 ",["userId"=>$this->userId]);
     }
     public function isInGroup($groupId){

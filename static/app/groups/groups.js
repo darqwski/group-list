@@ -1,9 +1,25 @@
 const State = {
     groups: [],
-    currentGroup: 0
+    currentGroup: undefined,
 }
 
-const editGroup = ({groupId, groupName}) => () => {
+const editGroupColor = ({groupId,colorId, groupName}) => () => {
+    customModal({
+        title:'Zmiana koloru grupy',
+        content: () => {
+            return $('<div>').append(Colors(colorId))
+        },
+        action: ()=> {
+            console.log(ColorState.colorId)
+            Request
+                .put('/API/groups/',{data: {colorId: ColorState.colorId || 0, groupId, groupName}})
+                .then(({message})=>showSnackbar(message))
+                .then(refreshApp)
+        }
+    })
+}
+
+const editGroupName = ({groupId, groupName, colorId}) => () => {
     customModal({
         title:'Edytowanie nazwy grupy',
         content: () => {
@@ -13,7 +29,7 @@ const editGroup = ({groupId, groupName}) => () => {
         action: ()=> {
             const { groupName } = gatherGroup('group')
             Request
-                .put('/API/groups/',{data: {groupName, groupId}})
+                .put('/API/groups/',{data: {groupName, groupId, colorId}})
                 .then(({message})=>showSnackbar(message))
                 .then(refreshApp)
         }
@@ -44,47 +60,96 @@ const addNewGroup = () => {
     })
 }
 
-const render = () => {
-    const { groups, currentGroup: currentGroupIndex } = State;
-    const currentGroup = groups[currentGroupIndex]
-    const container = $('<div>',{class:'groups-board'})
-    const groupList = $('<div>',{class: 'card group-list'})
-        .append($('<h3>', {class: 'purple darken-3 white-text'}).text('Twoje grupy'))
-        .append($('<div>').append(groups.map(({groupName}, index)=>(
-            $('<button>',{class: 'btn purple darken-4'})
-                .text(groupName)
-                .click(()=>{
-                    State.currentGroup = index;
-                    render();
-                })
+const SingleGroupView = ({groupName, login: admin, colorHex, image, users, lists}, index) => (
+    $('<div>',{class:'card group '+(index !== undefined ? 'clickable': ''),style:'background-color: '+(colorHex || '#FFFFFF')})
+        .append($('<div>',{class:'group-title'})
+            .append($('<i>',{class:'material-icons'}).text('group'))
+            .append($('<div>').append(
+                $('<h5>').text(groupName)
             )
-        )))
-        .append(IconWithDesc('add','Dodaj nową grupę',addNewGroup))
-    console.log(currentGroup)
-    const groupDetails = $('<div>',{class: 'card group-details purple lighten-4'})
-        .append(( groups.length !== 0 ) && $('<div>',{class:'group-title purple darken-3 white-text'})
-                .append($('<h3>').text(currentGroup.groupName))
-                .append($('<i>',{class:'material-icons'}).text('edit').click(editGroup(currentGroup)))
-                .append($('<i>',{class:'material-icons'}).text('delete').click(deleteGroup(currentGroup)))
+                .append(
+                    $('<p>').text(`Administrator ${admin}`)
+                ))
+            .append(index ===undefined && $('<i>',{class:'material-icons clickable'}).text('close').click(()=>{
+                State.currentGroup = undefined
+                render()
+            }))
         )
-        .append($('<h5>',{ class: 'purple darken-2 white-text'}).text(`Listy w grupie`))
         .append(
             $('<div>')
-                .append( !currentGroup || currentGroup.lists.length === 0 ? NoListsView() : currentGroup.lists.map(SingleListView))
-                .append($('<div>',{class:'card white'}).append(IconWithDesc('add','Dodaj nową listę',createList)))
+                .append(
+                    $('<div>',{class:'group-desc'})
+                        .append($('<i>',{class:'material-icons'}).text('assignment'))
+                        .append($('<span>').text(`${lists.length} list`))
+                )
+                .append(
+                    $('<div>',{class:'group-desc'})
+                        .append($('<i>',{class:'material-icons'}).text('group'))
+                        .append($('<span>').text(`${users.length} użytkowników w grupie`))
+                )
+        ).click(()=>{
+            console.log(index)
+            if(index !== undefined ){
+                State.currentGroup = index;
+                render()
+            }
+    })
+)
+
+const ListManager = ({lists}) => {
+    const container = $('<div>',{class:'lists-card'})
+    container.append($('<h5>',{class:'blue darken-3 white-text'}).text('List w grupie'))
+    container.append(lists.length === 0 ? NoListsView() : lists.map(SingleListView))
+    container.append($('<div>',{class:'card white single-list-view'}).append(IconWithDesc('add','Dodaj nową listę',createList)))
+    return container
+}
+
+const UserManager = ({users}) => {
+    const container = $('<div>',{class:'lists-card'})
+    container.append($('<h5>',{class:'blue darken-3 white-text'}).text('Członkowie'))
+    container.append(users.length === 0 ? noListsView() : users.map(SingleUserView))
+    container.append($('<div>',{class:'card white single-list-view'}).append(IconWithDesc('mail',"Zaproś użytkownika",inviteUser)))
+
+    return container
+}
+
+const SingleGroupEdit = (group) => {
+    const container = $('<div>', {class:'group-edit'})
+    container.append(SingleGroupView(group))
+    const {groupName, login: admin, colorHex, image, users, lists} = group;
+    return container;
+}
+
+const render = () => {
+    const { groups, currentGroup } = State;
+
+    if(currentGroup === undefined){
+        const container = $('<div>',{class:'groups-container'})
+        container.append(groups.map(SingleGroupView))
+        container.append($('<div>',{class:'card add-group'}).append(IconWithDesc('add','Dodaj nową grupę',addNewGroup)))
+        $('#app').empty().append(container);
+
+    } else {
+        const container = $('<div>')
+        container.append(SingleGroupEdit(groups[currentGroup]))
+        container.append($('<div>',{class:'card group-options'})
+            .append(IconWithDesc('edit','Zmień nazwę grupy',editGroupName(groups[currentGroup])))
+            .append(IconWithDesc('palette','Zmień kolor grupy',editGroupColor(groups[currentGroup])))
+            .append(IconWithDesc('delete','Usuń grupę',deleteGroup(groups[currentGroup])))
         )
-        .append($('<h5>',{ class: 'purple darken-2 white-text'}).text(`Członkowie w grupie`))
-        .append(
-            $('<div>')
-                .append(currentGroup && currentGroup.groups.map(SingleUserView))
-                .append($('<div>',{class:'card white'}).append(IconWithDesc('mail','Zaproś użytkownika',inviteUser)))
+        container.append(
+            $('<div>',{class:'edit-container'})
+                .append(ListManager(groups[currentGroup]))
+                .append(UserManager(groups[currentGroup]))
         )
 
-    $('#app').empty().append(container.append(groupList).append(groupDetails));
+        $('#app').empty().append(container);
+    }
+
 }
 
 const mergeGroupsAndLists = ({groups, lists}) => {
-    return groups.map((item,index)=>({ ...groups[index][0],groups: groups[index],lists: lists[index]}));
+    return groups.map((item,index)=>({ ...groups[index],lists: lists[index]}));
 }
 
 const refreshApp = () => Request.get('/API/groups/details/').then(({groups, lists}) => {

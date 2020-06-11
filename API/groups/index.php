@@ -27,9 +27,9 @@ WHERE groups.groupId = $groupId[groupId]
        ->toJson();
 }
 function addGroup(){
-    if(!isset($_SESSION['userId']))return;
     $userId = $_SESSION['userId'];
     $data = RequestAPI::getBody();
+    print_r($data);
     if(count((new Privileges($_SESSION['userId']))->getConnectedGroups())>=MAX_GROUPS_PER_USER){
         return message(
             "Nie możesz utworzyćgrupy ponieważ maksymalna ilośćgrup to "
@@ -50,7 +50,7 @@ function editGroup(){
     $userId = $_SESSION['userId'];
     $data = RequestAPI::getBody();
     if((new Privileges($userId))->canManageGroup($data['groupId'])){
-        $result = putCommand("UPDATE `groups` SET `groupName` = :groupName WHERE `groups`.`groupId` = :groupId;", $data);
+        $result = putCommand("UPDATE `groups` SET `groupName` = :groupName, `colorId` = :colorId WHERE `groups`.`groupId` = :groupId;", $data);
         if(!is_array($result)){
             return message('Grupę zmieniono pomyślnie');
         }

@@ -13,9 +13,10 @@ function getUserLists(){
         ->map(function ($groupId){
             $groupData = (new Stream())
                 ->getFromQuery("
-SELECT itemId, lists.listName, lists.listId, lists.groupId, itemName, status 
+SELECT itemId, lists.listName, lists.listId, lists.groupId, itemName, status, image 
 FROM `lists` 
 LEFT JOIN item ON item.listId = lists.listId 
+LEFT JOIN icons ON lists.iconId = icons.iconId 
 WHERE 
     lists.groupId = $groupId[groupId]
     AND 
@@ -36,7 +37,7 @@ function addNewList(){
         if(count($groups)>=5){
             return message('Posiadasz już 5 list w tej grupie, aby dodać wiecęj zakup premium');
         }
-        $result = insertCommand("INSERT INTO `lists` (`listId`, `groupId`, `listName`) VALUES (NULL, :groupId, :listName);", $data);
+        $result = insertCommand("INSERT INTO `lists` (`listId`, `groupId`, `listName`,`iconId`) VALUES (NULL, :groupId, :listName,:iconId);", $data);
         if(!is_array($result)){
             return message('Listę utworzono pomyślnie');
         }
@@ -51,7 +52,7 @@ function editList(){
     $userId = $_SESSION['userId'];
     $data = RequestAPI::getBody();
     if((new Privileges($userId))->canManageList($data['listId'])) {
-        $result = putCommand("UPDATE `lists` SET `listName` = :listName WHERE `lists`.`listId` = :listId;", $data);
+        $result = putCommand("UPDATE `lists` SET `listName` = :listName, `iconId`= :iconId WHERE `lists`.`listId` = :listId;", $data);
         if(!is_array($result)){
             return message('Listę zmieniono pomyślnie');
         }

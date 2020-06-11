@@ -7,28 +7,32 @@ const createList = () => {
             return $('<div>')
                 .append($('<p>').text('Lista zostanie dołączona do grupy ' + groupName))
                 .append(LabeledInput({name:'list-listName',label:"Podaj nazwę nowej list"}))
+                .append(Icons(iconId))
         },
         action: ()=> {
             const { listName } = gatherGroup('list')
             Request
-                .post('/API/lists/',{data: {listName, groupId}})
+                .post('/API/lists/',{data: {listName, groupId, iconId: IconsState.chosenIcon }})
                 .then(({message})=>showSnackbar(message))
                 .then(refreshApp)
         }
     })
 }
 
-const editList = (listId, name) => () => {
+const editList = (listId, name, iconId) => () => {
     customModal({
         title:'Edytowanie nowej listy',
         content: () => {
+            console.log(iconId)
             return $('<div>')
                 .append(LabeledInput({name:'list-listName',label:"Zmień nazwę listy", value: name}))
+                .append(Icons(iconId))
+
         },
         action: ()=> {
             const { listName } = gatherGroup('list')
             Request
-                .put('/API/lists/',{data: {listName, listId}})
+                .put('/API/lists/',{data: {listName, listId, iconId: IconsState.chosenIcon}})
                 .then(refreshApp)
         }
     })
@@ -43,13 +47,13 @@ const deleteList = (listId, name) => () => {
     })
 }
 
-const SingleListView = ({listId, listName},index) => {
+const SingleListView = ({listId, listName, iconId,image},index) => {
     const container = $('<div>',{class:'card single-list-view'})
     container
-        .append($('<i>',{class:'material-icons'}).text('receipt'))
+        .append(image ? $('<img>',{src:image}) : $('<i>',{class:'material-icons'}).text('receipt'))
         .append($('<h5>').text(listName))
-        .append($('<i>',{class:'material-icons'}).text('edit').click(editList(listId,listName)))
-        .append($('<i>',{class:'material-icons'}).text('delete').click(deleteList(listId,listName)))
+        .append($('<i>',{class:'material-icons clickable'}).text('edit').click(editList(listId,listName,iconId)))
+        .append($('<i>',{class:'material-icons clickable'}).text('delete').click(deleteList(listId,listName)))
     return container;
 }
 

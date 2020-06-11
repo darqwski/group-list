@@ -18,11 +18,18 @@ WHERE user_group.userId = $userId AND groups.isActive = 1")
     $response['groups'] = (new Stream($groups))
         ->map(function ($groupId){
             $groupData = getCommand("
-SELECT users.userId, users.login, users.email, groups.groupName, groups.groupId, groups.adminId FROM user_group
+SELECT groups.groupName, users.login, users.email, colorHex, colors.colorId, groupId FROM groups
+INNER JOIN users ON users.userId = groups.adminId
+LEFT JOIN colors on groups.colorId = colors.colorId
+WHERE groups.groupId = $groupId[groupId]
+            ")[0];
+            $groupData['users'] = getCommand("
+SELECT users.login, users.email, groups.groupName FROM user_group
 INNER JOIN users on users.userId = user_group.userId
 INNER JOIN groups on groups.groupId = user_group.groupId
 WHERE groups.groupId = $groupId[groupId]
 ");
+
         return $groupData;
     })
         ->get();
@@ -32,6 +39,7 @@ WHERE groups.groupId = $groupId[groupId]
 SELECT *, groups.groupId FROM user_group
 LEFT JOIN groups on groups.groupId = user_group.groupId
 INNER JOIN lists on groups.groupId = lists.groupId
+LEFT JOIN icons ON lists.iconId = icons.iconId 
 WHERE groups.groupId = $groupId[groupId]
 GROUP BY lists.listId
 ");
