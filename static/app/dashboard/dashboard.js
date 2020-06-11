@@ -75,6 +75,7 @@ const Table = ({ lists, currentList }) => {
     container.append($('<form>')
         .append($(LabeledInput({name: 'new-item', label:'Dodaj nową rzecz'})))
         .append($('<i>',{class:'material-icons'}).text('add').click(addNewItem))
+        .submit(addNewItem)
     )
     const todo = items.filter(({status, itemId})=>+status === 0 && itemId);
     container.append($('<h5>').text(`Do zrobienia ${todo.length}`))

@@ -12,4 +12,6 @@
 }
 .landing-page > .right-card {
     min-width: 25%;
+    flex-grow: 1;
+    margin: auto;
 }

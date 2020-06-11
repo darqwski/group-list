@@ -13,7 +13,7 @@ const RightMain = ()=>{
         .append($('<h3>').text('Panel logowania'))
         .append(
             $('<form>',{method:'POST'})
-                .append(LabeledInput({label:'login/email',name:'login'}))
+                .append(LabeledInput({label:'email',name:'login'}))
                 .append(LabeledInput({label:'Hasło',name:'password',type:'password'}))
                 .append($('<button>',{class:'btn',type:'submit'}).text('Zaloguj'))
                 .append($('<a>',{class:'btn-flat',href: 'register/'}).text('Zarejestruj'))

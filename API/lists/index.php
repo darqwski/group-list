@@ -19,7 +19,7 @@ LEFT JOIN item ON item.listId = lists.listId
 WHERE 
     lists.groupId = $groupId[groupId]
     AND 
-    (status = 0 OR status = 1)
+    (status = 0 OR status = 1 OR status IS NULL)
 ")->groupBy('listId')->toArray()->get();
            return $groupData;
         })
@@ -30,6 +30,7 @@ function addNewList(){
     $userId = $_SESSION['userId'];
     $data = RequestAPI::getBody();
     $privilegeCheck = new Privileges($userId);
+
     if($privilegeCheck->isInGroup($data['groupId'])){
         $groups = getCommand("SELECT * FROM lists WHERE `groupId` = :groupId",['groupId'=>$data['groupId']]);
         if(count($groups)>=5){

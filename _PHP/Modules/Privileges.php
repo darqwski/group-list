@@ -20,7 +20,6 @@ WHERE user_group.userId = :userId
         return getCommand("
 SELECT * FROM user_group 
 INNER JOIN groups ON user_group.groupId = groups.groupId
-INNER JOIN lists ON lists.groupId = groups.groupId
 WHERE user_group.userId = :userId
 ",["userId"=>$this->userId]);
     }
@@ -28,7 +27,6 @@ WHERE user_group.userId = :userId
         return getCommand("
 SELECT * FROM user_group 
 INNER JOIN groups ON user_group.groupId = groups.groupId
-INNER JOIN lists ON lists.groupId = groups.groupId
 WHERE user_group.userId = :userId AND user_group.groupId = :groupId
 ",["userId"=>$this->userId,"groupId"=>$groupId]);
     }

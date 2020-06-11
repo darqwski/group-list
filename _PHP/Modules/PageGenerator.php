@@ -18,9 +18,11 @@ function importModule($link){
 
 function importComponents($data){
     return importModule("$data[root]static/common/*");
+
 }
 function importModuleComponent($data){
-    return importModule("$data[root]static/app$_SERVER[REQUEST_URI]");
+    $uri = explode("?",$_SERVER['REQUEST_URI'])[0];
+    return importModule("$data[root]static/app$uri");
 }
 
 
