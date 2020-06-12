@@ -18,6 +18,7 @@ const inviteUser = () => {
 
 const SingleUserView = ({login,groupId, groupName, userId},index) => {
     const container = $('<div>',{class:'card single-list-view'})
+    console.log(groupId,userId)
     container
         .append($('<i>',{class:'material-icons'}).text('person').click(()=>{}))
         .append($('<h5>').text(login))

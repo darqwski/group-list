@@ -88,7 +88,6 @@ const SingleGroupView = ({groupName, login: admin, colorHex, image, users, lists
                         .append($('<span>').text(`${users.length} użytkowników w grupie`))
                 )
         ).click(()=>{
-            console.log(index)
             if(index !== undefined ){
                 State.currentGroup = index;
                 render()
@@ -106,8 +105,9 @@ const ListManager = ({lists}) => {
 
 const UserManager = ({users}) => {
     const container = $('<div>',{class:'lists-card'})
+    const {groupName, groupId} = State.groups[State.currentGroup]
     container.append($('<h5>',{class:'blue darken-3 white-text'}).text('Członkowie'))
-    container.append(users.length === 0 ? noListsView() : users.map(SingleUserView))
+    container.append(users.length === 0 ? noListsView() : users.map(user=>SingleUserView({...user, groupId})))
     container.append($('<div>',{class:'card white single-list-view'}).append(IconWithDesc('mail',"Zaproś użytkownika",inviteUser)))
 
     return container

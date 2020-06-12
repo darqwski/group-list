@@ -37,7 +37,7 @@ function invitePerson(){
     $inviteReceiver = $matchingPerson[0]['userId'];
 
     $alreadyInvited = getCommand("
-SELECT inviteReceiver FROM invitations WHERE inviteReceiver=:userId AND groupId=:groupId
+SELECT inviteReceiver FROM invitations WHERE inviteReceiver=:userId AND groupId=:groupId AND status = 0
 ",['userId'=>$inviteReceiver,'groupId'=>$group]);
     if(count($alreadyInvited)>0){
         return message('Użytkownik otrzymał już zaproszenie wcześniej');

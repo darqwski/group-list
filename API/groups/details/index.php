@@ -24,7 +24,7 @@ LEFT JOIN colors on groups.colorId = colors.colorId
 WHERE groups.groupId = $groupId[groupId]
             ")[0];
             $groupData['users'] = getCommand("
-SELECT users.login, users.email, groups.groupName FROM user_group
+SELECT users.login, users.userId,users.email, groups.groupName FROM user_group
 INNER JOIN users on users.userId = user_group.userId
 INNER JOIN groups on groups.groupId = user_group.groupId
 WHERE groups.groupId = $groupId[groupId]
