@@ -1,7 +1,9 @@
-.container {
+.dashboard {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 .groups-card {
     min-width: 300px;
@@ -30,8 +32,9 @@ div > h3{
     padding: 15px;
     padding-left: 20px;
 }
-.list-car {
+.list-card {
     min-width: 300px;
+    padding: 10px;
 }
 .single-list {
     padding:20px;
@@ -116,4 +119,16 @@ form i:hover {
 .empty-card {
     padding:20px;
     height: 400px;
+}
+.single-list-view {
+    display: flex;
+}
+.single-list-view > img {
+    max-height: 48px;
+}
+.single-list-view > i {
+    font-size: 48px;
+}
+.single-list-view > * {
+    margin-left: 10px;
 }

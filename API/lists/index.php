@@ -13,15 +13,22 @@ function getUserLists(){
         ->map(function ($groupId){
             $groupData = (new Stream())
                 ->getFromQuery("
-SELECT itemId, lists.listName, lists.listId, lists.groupId, itemName, status, image 
+SELECT  lists.listName, lists.listId, lists.groupId, image, groups.groupId, colors.colorHex
 FROM `lists` 
-LEFT JOIN item ON item.listId = lists.listId 
+INNER JOIN groups ON groups.groupId = lists.groupId 
+LEFT JOIN colors ON colors.colorId = groups.colorId 
 LEFT JOIN icons ON lists.iconId = icons.iconId 
-WHERE 
-    lists.groupId = $groupId[groupId]
-    AND 
-    (status = 0 OR status = 1 OR status IS NULL)
-")->groupBy('listId')->toArray()->get();
+WHERE lists.groupId = $groupId[groupId]
+")
+                ->map(function ($list){
+                    $items = getCommand("
+SELECT itemId,itemName, status FROM item
+WHERE listId = $list[listId] AND
+(status = 0 OR status = 1 OR status IS NULL)");
+                    $list['items'] = $items;
+                    return $list;
+                })
+                ->get();
            return $groupData;
         })
        ->toJson();

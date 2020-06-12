@@ -2,15 +2,23 @@ const State = {
     currentList: 0
 }
 
+const SingleListView = ({listName, colorHex, image}, index) => {
+    const container = $('<div>',{class:'card single-list-view clickable',style:`background-color:${colorHex};`})
+    container
+        .append(image ? $('<img>',{src:image}) : $('<i>',{class:'material-icons'}).text('assignment'))
+        .append($('<h5>').text(listName))
+    return container.click(()=>{
+        State.currentList = index;
+        render()
+    });
+}
+
 const CurrentLists = ({ lists }) => {
     const container = $('<div>',{class:'card list-card'})
-    container.append($('<h3>', {class: 'purple darken-3 white-text'}).text('Twoje listy'))
     container.append(lists.length === 0 ?
         noListsView() :
         lists.map((list, index) => (
-                !!list.length && $('<h5>',{class:'single-list'})
-                    .text(`${index+1}.${list[0].listName} (${list.length})`)
-                    .click(()=>{State.currentList = index;render();})
+            SingleListView(list,index)
         )))
     return container;
 }
@@ -67,11 +75,9 @@ const Table = ({ lists, currentList }) => {
     if(lists.length === 0) {
         return emptyView();
     }
-    const items = lists[currentList];
-    const list = lists[currentList][0]
+    const {items , listName, colorHex} = lists[currentList];
     const container = $('<div>',{class:'card table-card'})
-    const { listName } = list;
-    container.append($('<h3>', {class: 'purple darken-3 white-text'}).text(listName))
+    container.append($('<h3>', {style:`background-color:${colorHex};`}).text(listName))
     container.append($('<form>')
         .append($(LabeledInput({name: 'new-item', label:'Dodaj nową rzecz'})))
         .append($('<i>',{class:'material-icons'}).text('add').click(addNewItem))
@@ -86,13 +92,12 @@ const Table = ({ lists, currentList }) => {
     return container
 }
 const render = () => {
-    const container = $('<div>',{class:'container'})
-    const { groups, lists = [[]], currentList = 0, invitations} = State;
+    const container = $('<div>',{class:'dashboard'})
+    const { lists = [], currentList = 0, invitations} = State;
 
     container.append($('<div>')
         .append(invitations.length === 0 ? undefined :CurrentInvitations({invitations}))
         .append(CurrentLists({lists}))
-        .append(CurrentGroups({groups}))
     )
     container.append(Table({lists, currentList}))
     container.append()
@@ -100,9 +105,7 @@ const render = () => {
 
     $('#app').empty().append(container)
 }
-const refreshApp = () => Request.get('/API/groups/')
-    .then(groups=>{State.groups = groups})
-    .then(() => Request.get('/API/lists/'))
+const refreshApp = () => Request.get('/API/lists/')
     .then(lists=>State.lists = lists.reduce((memo,item)=>([...memo, ...item]),[]))
     .then(() => Request.get('/API/invitations/?type=receiver'))
     .then(invitations=>State.invitations = invitations)
