@@ -19,10 +19,11 @@ function sendMail($link, $address){
     $mail->SMTPDebug = 0;
     $mail->SMTPAuth = true;
     $mail->SMTPSecure = "ssl";
+    $mail->Port = 465;
     $mail->Host = HOST;
     $mail->Username = EMAIL;
     $mail->Password = EMAIL_PASSWORD;
-    $mail->setFrom("grouplist@dariuszcabala.hekko24.pl");
+    $mail->setFrom(EMAIL);
     $mail->AddAddress($address);
     $mail->addCustomHeader("Content-type","text/html; charset=utf-8");
     $mail->Subject = "Potwierdzenie rejestracji";
