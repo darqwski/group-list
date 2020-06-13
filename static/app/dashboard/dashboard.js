@@ -40,7 +40,7 @@ const SingleItemView = ({itemName, status, itemId}, index) => {
 
 const addNewItem = () => {
    const { item } = gatherGroup('new');
-   const { listId } =  State.lists[State.currentList][0]
+   const { listId } =  State.lists[State.currentList]
    Request.post('/API/items/',{data: { itemName: item, listId}})
        .then(refreshApp)
 }
@@ -95,13 +95,10 @@ const render = () => {
     const container = $('<div>',{class:'dashboard'})
     const { lists = [], currentList = 0, invitations} = State;
 
-    container.append($('<div>')
+    container
         .append(invitations.length === 0 ? undefined :CurrentInvitations({invitations}))
         .append(CurrentLists({lists}))
-    )
-    container.append(Table({lists, currentList}))
-    container.append()
-
+        .append(Table({lists, currentList}))
 
     $('#app').empty().append(container)
 }

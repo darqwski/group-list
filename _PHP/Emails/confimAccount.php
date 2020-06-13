@@ -15,14 +15,13 @@ function populateData($template, $data){
 
 function sendMail($link, $address){
     $mail = new \PHPMailer\PHPMailer\PHPMailer();
-    $mail->IsSMTP(); // telling the class to use SMTP
-    $mail->SMTPDebug = 0;                     // enables SMTP debug information (for testing)
-    $mail->SMTPAuth = true;                  // enable SMTP authentication
-    $mail->SMTPSecure = "ssl";                 // sets the prefix to the servier
-    $mail->Host = HOST; // SMTP server
-    $mail->Port = 465;                   // set the SMTP port for the GMAIL server
-    $mail->Username = EMAIL;  // GMAIL username
-    $mail->Password = EMAIL_PASSWORD;            // GMAIL password
+    $mail->IsSMTP();
+    $mail->SMTPDebug = 0;
+    $mail->SMTPAuth = true;
+    $mail->SMTPSecure = "ssl";
+    $mail->Host = HOST;
+    $mail->Username = EMAIL;
+    $mail->Password = EMAIL_PASSWORD;
     $mail->setFrom("grouplist@dariuszcabala.hekko24.pl");
     $mail->AddAddress($address);
     $mail->addCustomHeader("Content-type","text/html; charset=utf-8");

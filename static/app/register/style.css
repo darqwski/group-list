@@ -3,3 +3,11 @@
     padding: 20px;
     margin: 20px auto auto;
 }
+@media screen and (max-width: 800px) {
+    .main-card {
+        width: 100%;
+    }
+    .main-card button {
+        width: 100%;
+    }
+}

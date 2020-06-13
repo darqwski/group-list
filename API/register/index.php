@@ -8,7 +8,12 @@ function registerNewUser(){
     $data = RequestAPI::getBody();
     $password = $data['password'];
     $link = md5($password.$data['login']);
-    sendMail("https://dariuszcabala.pl/activations/?link=".$link, $data['email']);
+    $existingUsers = getCommand("SELECT * FROM users WHERE email = :email",["email"=>$data['email']]);
+    if(count($existingUsers) > 0){
+        return message('Mail jest zajęty, spróbuj ponownie z innym');
+    }
+    sendMail("https://dariuszcabala.pl/grouplist/activations/?link=".$link, $data['email']);
+
     unset($data['password']);
     $result = insertCommand("
 INSERT INTO `users` (`userId`, `email`, `login`, `password`, `registrationDate`,`activationLink`) 

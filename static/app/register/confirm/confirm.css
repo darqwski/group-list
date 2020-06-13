@@ -1,0 +1,15 @@
+.card {
+    padding: 20px;
+    margin: 100px auto auto;
+    width: 75%;
+}
+.card a {
+    margin-top: 20px;
+    width: 100%;
+}
+
+@media screen and (max-width: 800px) {
+    .card {
+        width: 100%;
+    }
+}

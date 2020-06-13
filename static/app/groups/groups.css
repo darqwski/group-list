@@ -31,6 +31,7 @@
 
 .edit-container {
     display: flex;
+    flex-wrap: wrap;
 }
 .edit-container > div {
     flex-grow: 1;
@@ -67,6 +68,7 @@
 }
 .icon-desc {
     display: flex;
+    padding-top: 10px;
 }
 .icon-desc > i {
     width: auto;
@@ -105,4 +107,22 @@
     max-height: 32px;
     cursor: pointer;
     margin:5px;
+}
+
+@media screen and (max-width: 800px) {
+    .groups-container {
+        padding-top: 10px;
+    }
+    .icon-desc {
+        padding: 0px;
+    }
+    .icon-desc > p {
+        display: none;
+    }
+    .icon-desc > i{
+        padding:10px;
+    }
+    .single-list-view:last-child > .icon-desc > p {
+        display: block;
+    }
 }
