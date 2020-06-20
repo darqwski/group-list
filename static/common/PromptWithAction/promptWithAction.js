@@ -60,7 +60,6 @@ const customModal = ({title,content, action})=>{
         )
     $('#app').append(container);
     $('#'+id).modal();
-    console.log($('#'+id).modal('open'))
     $('#'+id).modal('open')
     return id;
 }

@@ -10,7 +10,6 @@ const editGroupColor = ({groupId,colorId, groupName}) => () => {
             return $('<div>').append(Colors(colorId))
         },
         action: ()=> {
-            console.log(ColorState.colorId)
             Request
                 .put('/API/groups/',{data: {colorId: ColorState.colorId || 0, groupId, groupName}})
                 .then(({message})=>showSnackbar(message))
@@ -54,8 +53,9 @@ const addNewGroup = () => {
         },
         action: ()=> {
             const { groupName } = gatherGroup('group')
-            Request.post('/API/groups/',{data: {groupName}})
-                .then(window.location.href+='../groups')
+            Request
+                .post('/API/groups/',{data: {groupName}})
+                .then(refreshApp)
         }
     })
 }

@@ -16,10 +16,8 @@ const inviteUser = () => {
     })
 }
 
-const SingleUserView = ({login,groupId, groupName, userId},index) => {
-    const container = $('<div>',{class:'card single-list-view'})
-    console.log(groupId,userId)
-    container
+const SingleUserView = ({login,groupId, groupName, userId},index) => (
+    $('<div>',{class:'card single-list-view'})
         .append($('<i>',{class:'material-icons'}).text('person').click(()=>{}))
         .append($('<h5>').text(login))
         .append(IconWithDesc('delete','Usuń z grupy', ()=>showToastWithAction({
@@ -27,5 +25,4 @@ const SingleUserView = ({login,groupId, groupName, userId},index) => {
             message: `Czy na pewno chcesz usunąć ${login} z grupy ${groupName}?`,
             action: () => Request.delete('/API/groups/details/',{data: {groupId, userId}}).then(refreshApp)
         })))
-    return container;
-}
+)

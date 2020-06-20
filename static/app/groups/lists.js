@@ -1,13 +1,13 @@
 const createList = () => {
     const {groupName, groupId} = State.groups[State.currentGroup]
-    console.log(State.groups[State.currentGroup])
+
     customModal({
         title:'Dodawania nowej listy',
         content: () => {
             return $('<div>')
                 .append($('<p>').text('Lista zostanie dołączona do grupy ' + groupName))
                 .append(LabeledInput({name:'list-listName',label:"Podaj nazwę nowej list"}))
-                .append(Icons(iconId))
+                .append(Icons())
         },
         action: ()=> {
             const { listName } = gatherGroup('list')
@@ -22,13 +22,10 @@ const createList = () => {
 const editList = (listId, name, iconId) => () => {
     customModal({
         title:'Edytowanie nowej listy',
-        content: () => {
-            console.log(iconId)
-            return $('<div>')
+        content: () => $('<div>')
                 .append(LabeledInput({name:'list-listName',label:"Zmień nazwę listy", value: name}))
                 .append(Icons(iconId))
-
-        },
+        ,
         action: ()=> {
             const { listName } = gatherGroup('list')
             Request
@@ -37,6 +34,7 @@ const editList = (listId, name, iconId) => () => {
         }
     })
 }
+
 const deleteList = (listId, name) => () => {
     showToastWithAction({
         title:'Usuwanie listy',
@@ -57,8 +55,6 @@ const SingleListView = ({listId, listName, iconId,image},index) => {
     return container;
 }
 
-const NoListsView = () => {
-    const container = $('<div>').append("Na razie nie ma żadnej listy w tej grupie")
-
-    return container;
-}
+const NoListsView = () => (
+    $('<div>').append("Na razie nie ma żadnej listy w tej grupie")
+)

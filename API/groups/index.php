@@ -29,7 +29,7 @@ WHERE groups.groupId = $groupId[groupId]
 function addGroup(){
     $userId = $_SESSION['userId'];
     $data = RequestAPI::getBody();
-    print_r($data);
+
     if(count((new Privileges($_SESSION['userId']))->getConnectedGroups())>=MAX_GROUPS_PER_USER){
         return message(
             "Nie możesz utworzyćgrupy ponieważ maksymalna ilośćgrup to "

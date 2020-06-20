@@ -4,20 +4,14 @@ const IconsState = {
     currentComponent: undefined
 }
 
-const SingleIcon = ({image, iconId})=>{
-    console.log({
-        result: iconId == IconsState.chosenIcon,
-        iconId,
-        chosen: IconsState.chosenIcon
-    })
-    return (
-        $('<img>',{src:image,style:iconId == IconsState.chosenIcon ? 'border:2px solid red;':''})
-            .click(()=>{
-                IconsState.chosenIcon=iconId;
-                IconsRender();
-            })
-    )
-}
+const SingleIcon = ({image, iconId})=>(
+    $('<img>',{src:image,style:iconId == IconsState.chosenIcon ? 'border:2px solid red;':''})
+        .click(()=>{
+            IconsState.chosenIcon=iconId;
+            IconsRender();
+        })
+)
+
 const Icons = (iconId) => {
     const container = $('<div>')
     IconsState.chosenIcon = iconId;
